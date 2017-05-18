@@ -18,5 +18,6 @@ tcpdump -leni moni1 -s 222 | awk '($14 != "Beacon") && /SA:/{split($7,a,"d"); pr
 192.168.1.20 (OpenWRT Router)
 192.168.1.232 (Server)
 192.168.1.232:88 (Website)
+https://github.com/tdenisenko/openwrt-backend (github)
 60:A4:D0:9D:D8:03 (J7 Prime)
 D0:23:DB:5E:3C:93 (Olivier's iPhone)

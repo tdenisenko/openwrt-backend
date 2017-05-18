@@ -22,18 +22,41 @@ int main(int argc, char *argv[]) {
 
 	const int LEN = 11;
     const char *paramValues[3];
+    const char *paramValues2[1];
 	int ret;
 	int routerNo;
 	int rssi;
 	char mac_id[18];
 	char *line = NULL;
 	size_t size;
-	while(getline(&line, &size, stdin) != -1) {
+	while(getline(&line, &size, stdin) != -1) {	
 		ret = sscanf(line, "%d %*s %s %d", &routerNo, mac_id, &rssi);
 		if (ret != 3) {
 			fprintf(stderr, "Wrong input, only %d words found.\n", ret);
 			exit(1);
 		}
+		
+		//add timer
+		paramValues2[0] = mac_id;
+		char *stm2 = "SELECT mac_id FROM mac_list WHERE mac_id=$1;";
+		PGresult *res2 = PQexecParams(conn, stm2, 1, NULL, paramValues2, 
+			NULL, NULL, 0);    
+		
+		if (PQresultStatus(res2) != PGRES_TUPLES_OK) {
+
+			printf("No data retrieved\n");  
+			char *errmsg2 = PQresultErrorMessage(res2);
+			printf("Error1: %s\n", errmsg2);			
+			PQclear(res2);
+			do_exit(conn);
+		} 
+
+		if (PQntuples(res2) == 0) {
+			PQclear(res2);
+			continue;
+		}
+		
+		PQclear(res2);
 		//printf("Your command: %d %s %d\n", routerNo, mac_id, rssi);
 		char str[LEN];
 		char str2[LEN];
@@ -48,7 +71,7 @@ int main(int argc, char *argv[]) {
 		if (PQresultStatus(res) != PGRES_COMMAND_OK) {
 
 			char *errmsg = PQresultErrorMessage(res);
-			printf("Error: %s\n", errmsg);
+			printf("Error2: %s\n", errmsg);
 			PQclear(res);
 			do_exit(conn);
 		} 
