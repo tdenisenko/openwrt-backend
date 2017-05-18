@@ -1,0 +1,17 @@
+we will create 1 database for each venue
+in each database there will be:
+	1 table for devices to be checked (MAC_ID list)
+	1 table for device RSSIs from routers (router primary key), n columns for RSSIs (n = number of devices on other table, column name = MAC_ID of devices)
+a website will be available to update devices list, also an API for android application to add and remove devices from database
+openwrt will ssh the tcpdump (timestamp + MAC_ID + RSSI) information to server
+server will process the information and update the database
+	server will check the device list
+	server will collect RSSI information for all devices in the list for the last 10 seconds and update the latest RSSI for each on database
+	server will repeat this process for all routers
+then another process running in the server will continuously check the database and calculate the devices' location (trilateration + fingerprinting)
+
+topics to be discussed:
+	- how to process data in real time? (which language?)
+	- mysql multithreading (which engine? or which database?)
+		- redis
+	- processing power, accuracy and latency (table lookups)

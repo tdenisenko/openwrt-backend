@@ -1,0 +1,4 @@
+INSERT INTO connections (mac_id, router_id, rssi)
+VALUES ('12:34:ab:cd:56:ef', 1, -55)
+ON CONFLICT (mac_id, router_id) DO UPDATE 
+  SET rssi = excluded.rssi;

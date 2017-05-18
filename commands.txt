@@ -1,0 +1,22 @@
+ssh root@192.168.1.20 (n((admin)
+
+opkg install tcpdump
+
+dropbearkey -f id_rsa -t rsa -s 2048
+dropbearkey -y -f id_rsa | grep "^ssh-rsa " >> authorized_keys
+cat authorized_keys | ssh ncc@192.168.1.232 'cat >> /home/ncc/.ssh/authorized_keys'
+
+sudo iw phy phy1 interface add moni1 type monitor
+sudo ifconfig moni1 up
+exit
+
+cat /c/Users/tdenisenko/Dropbox/Business/NCC/Projects/Wifin/OpenWRT/dbproc2.c | ssh ncc@192.168.1.232 'cat - > /openwrt/dbproc2.c; gcc -o /openwrt/dbproc2 /openwrt/dbproc2.c -I/usr/include/postgresql -lpq -std=c99'
+
+ssh root@192.168.1.20
+tcpdump -leni moni1 -s 222 | awk '($14 != "Beacon") && /SA:/{split($7,a,"d"); print "1 " substr($1, 1, 8) " " substr($13, 4, 17) " " a[1]}' | ssh -i id_rsa ncc@192.168.1.232 'cat - | /openwrt/dbproc2'
+
+192.168.1.20 (OpenWRT Router)
+192.168.1.232 (Server)
+192.168.1.232:88 (Website)
+60:A4:D0:9D:D8:03 (J7 Prime)
+D0:23:DB:5E:3C:93 (Olivier's iPhone)
